@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tf-Idf по документу</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Первые 50 слов</h1>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Word</th>
+            <th>Tf</th>
+            <th>Idf</th>
+        </tr>
+        {% for item in data %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.word }}</td>
+                <td>{{ item.tf }}</td>
+                <td>{{ item.idf }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="http://localhost:8000/">Назад</a>
+</body>
+</html>
