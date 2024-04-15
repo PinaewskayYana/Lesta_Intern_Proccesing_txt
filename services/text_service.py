@@ -102,8 +102,10 @@ class TextService:
         count_word: int
             Количество вхождений слова в текст
         """
-
-        tf = count_word / length_text
+        try:
+            tf = count_word / length_text
+        except ZeroDivisionError:
+            return 0
         return tf
     
 
