@@ -22,7 +22,7 @@ async def get_uploud_page(request: Request):
     return templates.TemplateResponse("uploud_file.html", {"request": request})
 
 
-@router_page.get("/page/table/{name}")
+@router_page.get("/page/table/{doc_id}")
 async def get_table(request: Request, data=Depends(create_table)):
     """
     Обработка маршрута для отображения таблицы

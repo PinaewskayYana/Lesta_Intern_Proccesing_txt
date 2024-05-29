@@ -252,6 +252,5 @@ class TextService:
                 await self.create_idf(word)
             else:
                 await self.update_idf(res_chec, word)
-        tb = TableService(doc_id, self.database_service)
-        return await tb.choice50() 
+        return doc_id  
     

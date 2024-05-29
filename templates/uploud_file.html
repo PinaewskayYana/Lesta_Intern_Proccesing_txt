@@ -9,20 +9,23 @@
 <body>
   <script>
     function uploadFile() {
-      let fileInput = document.getElementById('fileInput');
-      let file = fileInput.files[0];
-      const fileName = file.name;
-      let formData = new FormData();
-      formData.append('file', file);
-      
-      fetch('http://localhost:8000/api/file/uploadfile', {
-          method: 'POST',
-          body: formData
-      })
-      .then(response => response.json());
-      window.location.href = `/page/table/${fileName}`;
-  };
-  </script>
+        let fileInput = document.getElementById('fileInput');
+        let file = fileInput.files[0];
+    
+        let formData = new FormData();
+        formData.append('file', file);
+    
+        fetch('http://localhost:8000/api/file/uploadfile', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            let doc_id = data.doc_id; 
+            window.location.href =`/page/table/${doc_id}`; 
+        });
+    };
+    </script>
   <input type="file" id="fileInput"> <br><br>
   <button id="uploadButton", onclick="uploadFile()">Загрузить файл</button>
 </body>
