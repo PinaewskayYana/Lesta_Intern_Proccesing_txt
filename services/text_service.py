@@ -5,7 +5,7 @@ from sqlalchemy import select, distinct, func
 import uuid
 from math import log
 from data.database_service import Databaseservice
-from data.models import Tf, Idf
+from data.models import Tf
 from .table_service import TableService
 
 class TextService:
@@ -118,7 +118,7 @@ class TextService:
         return str(doc_id)
 
 
-    async def create_tf(self, doc_id: str, word: str, tf: float):
+    async def create_tf(self, doc_id: str, word: str, tf: float, idf: float):
         """
         Создание записи в бд в таблице Tf
 
@@ -132,7 +132,7 @@ class TextService:
             tf для заданного слова
         """
 
-        created_tf = Tf(doc_id=doc_id, word=word, tf=tf)
+        created_tf = Tf(doc_id=doc_id, word=word, tf=tf, idf=idf)
         return await self.database_service.save(instance=created_tf)
     
 
@@ -172,55 +172,12 @@ class TextService:
 
         count_doc = await self.count_doc()
         сount_doc_word = await self.count_doc_word(word)
-        deli = count_doc / сount_doc_word
+        try:
+            deli = count_doc / сount_doc_word
+        except ZeroDivisionError:
+            deli = 1
         idf = log(deli)
         return idf
-
-
-    async def check_idf(self, word):
-        """
-        Запрос в бд, для проверки наличия idf для заданного слова
-
-        Парамет:
-        ---------------
-        word: str
-            Заданное слово
-        """
-
-        query = select(Idf.id).where(Idf.word == word)
-        respond = await self.database_service._first(query)
-        if respond is None:
-            return False
-        return respond
-
-
-    async def create_idf(self, word: str):
-        """
-        Создание новой записи в бд в таблице Idf для заданного слова
-
-        Параметр:
-        word: str
-            Заданное слово
-        """
-
-        idf = await self.get_idf(word)
-        created_idf = Idf(word=word, idf=idf)
-        return await self.database_service.save(instance=created_idf)
-
-
-    async def update_idf(self, id, word):
-        """
-        Обновление записи в таблице Idf заданного слова
-
-        Параметр:
-        word: str
-            Заданное слово
-        """
-
-        session = self.database_service.session
-        need_word = await session.get(Idf, id)
-        need_word.idf = await self.get_idf(word)
-        await session.commit()
     
 
     def preprocessing(self):
@@ -246,11 +203,6 @@ class TextService:
         count_word = Counter(text)
         for word, count in count_word.items():
             tf = self.get_tf(length, count)
-            await self.create_tf(doc_id, word, tf)
-            res_chec = await self.check_idf(word)
-            if res_chec == False:
-                await self.create_idf(word)
-            else:
-                await self.update_idf(res_chec, word)
+            idf = await self.get_idf(word)
+            await self.create_tf(doc_id, word, tf, idf)
         return doc_id  
-    

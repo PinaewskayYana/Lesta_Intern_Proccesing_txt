@@ -36,6 +36,6 @@ async def create_table(doc_id: str):
     """
     Маршрут для обработки файла
     """
-    tb = TableService(doc_id,  db_serv)
-    return await tb.choice50()
+    tb = TableService(db_serv)
+    return await tb.choice50(doc_id)
     

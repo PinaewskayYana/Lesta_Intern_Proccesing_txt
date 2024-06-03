@@ -8,12 +8,6 @@ class Tf(Base):
     doc_id: Mapped[str]
     word: Mapped[str]
     tf: Mapped[float]
-
-
-class Idf(Base):
-    __tablename__ = 'Idf'
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    word: Mapped[str] 
     idf: Mapped[float]
+
     
